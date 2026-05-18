@@ -38,12 +38,16 @@ jobs:
 
       # ── 5. 이메일 발송 ──
       - name: Send email
-        if: ${{ secrets.EMAIL_TO != '' }}
         env:
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
           EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: |
+          if [ -z "$EMAIL_TO" ]; then
+            echo "⚠ EMAIL_TO 시크릿이 설정되지 않았습니다. 이메일 발송을 건너뜁니다."
+            exit 0
+          fi
+          
           DATE=$(date +%Y-%m-%d)
           
           # Excel 첨부 파일 찾기
